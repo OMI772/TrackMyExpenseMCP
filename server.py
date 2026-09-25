@@ -1375,5 +1375,5 @@ if __name__ == "__main__":
         "TrackMyExpense MCP server started"
     )
 
-    mcp.run()
+    mcp.run(transport="streamable-http")
 

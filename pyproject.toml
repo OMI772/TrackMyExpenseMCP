@@ -6,9 +6,11 @@ readme = "README.md"
 authors = [
     { name = "OMI772", email = "omichimanpure77@gmail.com" }
 ]
-requires-python = ">=3.10"
+requires-python = ">=3.12,<3.13"
 dependencies = [
     "fastmcp>=4.0.8",
+    "psycopg>=3.3.6",
+    "psycopg-pool>=3.3.3",
 ]
 
 [project.scripts]
