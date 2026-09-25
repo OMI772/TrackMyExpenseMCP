@@ -67,7 +67,7 @@ pool = ConnectionPool(
 
 def init_db():
     """
-    Initialize all application tables.
+    Initialize application tables and migrate existing schemas.
     """
 
     with pool.connection() as conn:
@@ -94,6 +94,44 @@ def init_db():
                 """
             )
 
+            # Migrate existing expenses table
+            cur.execute(
+                """
+                ALTER TABLE expenses
+                ADD COLUMN IF NOT EXISTS subcategory TEXT DEFAULT ''
+                """
+            )
+
+            cur.execute(
+                """
+                ALTER TABLE expenses
+                ADD COLUMN IF NOT EXISTS note TEXT DEFAULT ''
+                """
+            )
+
+            cur.execute(
+                """
+                ALTER TABLE expenses
+                ADD COLUMN IF NOT EXISTS created_at
+                    TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+                """
+            )
+
+            cur.execute(
+                """
+                ALTER TABLE expenses
+                ADD COLUMN IF NOT EXISTS updated_at
+                    TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+                """
+            )
+
+            cur.execute(
+                """
+                ALTER TABLE expenses
+                ADD COLUMN IF NOT EXISTS deleted_at TIMESTAMP NULL
+                """
+            )
+
             # ------------------------------------------------
             # Budgets
             # ------------------------------------------------
@@ -110,6 +148,23 @@ def init_db():
                     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
                     UNIQUE(category, month)
                 )
+                """
+            )
+
+            # Migrate existing budgets table
+            cur.execute(
+                """
+                ALTER TABLE budgets
+                ADD COLUMN IF NOT EXISTS created_at
+                    TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+                """
+            )
+
+            cur.execute(
+                """
+                ALTER TABLE budgets
+                ADD COLUMN IF NOT EXISTS updated_at
+                    TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
                 """
             )
 
@@ -146,7 +201,6 @@ def init_db():
             )
 
     logger.info("Database initialized successfully")
-
 
 # ============================================================
 # VALIDATION HELPERS
